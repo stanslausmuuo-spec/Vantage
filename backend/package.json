@@ -4,8 +4,9 @@
   "description": "Project Management API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "tsx server.ts",
+    "dev": "tsx server.ts",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "express-validator": "^7.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "vitest": "^5.0.3"
   }
 }
