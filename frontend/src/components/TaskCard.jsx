@@ -36,7 +36,7 @@ const TaskCard = memo(({ task, onDelete }) => {
           <span className="task-card-title">{task.title}</span>
         </div>
         <div className="task-card-actions">
-          <button className="btn-icon btn-sm" onClick={() => onDelete(task.id)}>
+          <button className="btn-icon btn-sm" onClick={() => onDelete(task.id)} aria-label={`Delete task ${task.title}`}>
             <Trash2 size={12} />
           </button>
         </div>

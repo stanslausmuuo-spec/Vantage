@@ -40,7 +40,12 @@ const Sidebar = () => {
               </motion.span>
             )}
           </AnimatePresence>
-          <button className="btn-icon sidebar-collapse" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          <button
+            className="btn-icon sidebar-collapse"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            aria-expanded={sidebarOpen}
+          >
             <ChevronLeft size={16} style={{ transform: sidebarOpen ? 'rotate(0)' : 'rotate(180deg)' }} />
           </button>
         </div>
@@ -57,6 +62,8 @@ const Sidebar = () => {
                 className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`}
                 onClick={() => navigate(item.path)}
                 title={item.label}
+                aria-label={item.label}
+                aria-current={active ? 'page' : undefined}
               >
                 <item.icon size={18} />
                 <AnimatePresence mode="wait">
@@ -86,6 +93,8 @@ const Sidebar = () => {
             className={`sidebar-item sidebar-studio-item ${STUDIO_ITEM.highlight ? 'sidebar-item-highlight' : ''} ${location.pathname === STUDIO_ITEM.path ? 'sidebar-item-active' : ''}`}
             onClick={() => navigate(STUDIO_ITEM.path)}
             title={STUDIO_ITEM.label}
+            aria-label={STUDIO_ITEM.label}
+            aria-current={location.pathname === STUDIO_ITEM.path ? 'page' : undefined}
           >
             <STUDIO_ITEM.icon size={18} />
             <AnimatePresence mode="wait">
@@ -118,6 +127,8 @@ const Sidebar = () => {
               className={`sidebar-item ${location.pathname === item.path ? 'sidebar-item-active' : ''}`}
               onClick={() => navigate(item.path)}
               title={item.label}
+              aria-label={item.label}
+              aria-current={location.pathname === item.path ? 'page' : undefined}
             >
               <item.icon size={18} />
               <AnimatePresence mode="wait">
@@ -139,7 +150,7 @@ const Sidebar = () => {
         <div className="sidebar-spacer" />
 
         <div className="sidebar-footer">
-          <button className="sidebar-item sidebar-new-btn" onClick={() => setShowNewProjectModal(true)}>
+          <button className="sidebar-item sidebar-new-btn" onClick={() => setShowNewProjectModal(true)} aria-label="New project">
             <Plus size={18} />
             <AnimatePresence mode="wait">
               {sidebarOpen && (

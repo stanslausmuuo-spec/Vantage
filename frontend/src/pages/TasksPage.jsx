@@ -51,16 +51,16 @@ export default function TasksPage() {
         </div>
       ) : noProjects ? (
         <div className="page-empty">
-          <ListTodo size={40} className="page-empty-icon" />
+          <ListTodo size={40} className="page-empty-icon" aria-hidden="true" />
           <h3>No projects yet</h3>
           <p>Create a project, then tasks will appear here automatically.</p>
           <button className="btn btn-primary" onClick={() => setShowNewProjectModal(true)}>
-            <Plus size={16} /> Create Project
+            <Plus size={16} /> Create project
           </button>
         </div>
       ) : tasks.length === 0 ? (
         <div className="page-empty">
-          <ListTodo size={40} className="page-empty-icon" />
+          <ListTodo size={40} className="page-empty-icon" aria-hidden="true" />
           <h3>No tasks yet</h3>
           <p>Add tasks inside any project to track work across your workspace.</p>
         </div>

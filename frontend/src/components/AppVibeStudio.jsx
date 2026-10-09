@@ -4,12 +4,12 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, AreaChart, Area, Tool
 import {
   Code2, GitCommit, GitPullRequest, Cloud, Activity,
   Smartphone, Monitor, Server, Database, CreditCard,
-  ArrowUpRight, Users, Plus, Zap, BarChart3,
+  ArrowUpRight, Users, Plus, Zap,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import api from '../api';
 
-const COLORS = { success: '#22c55e', warning: '#eab308', danger: '#ef4444', primary: '#6366f1' };
+const COLORS = { success: '#37704f', warning: '#8a6216', danger: '#b23a2f', primary: '#a34c26' };
 
 export default function AppVibeStudio() {
   const [builds, setBuilds] = useState([]);
@@ -128,9 +128,9 @@ function BuildHealthChart({ builds, loading }) {
       <div className="studio-card-body">
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={data}>
-            <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5a6278' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: '#5a6278' }} axisLine={false} tickLine={false} domain={[0, 100]} />
-            <ReTooltip contentStyle={{ background: '#181b28', border: '1px solid #1e2235', borderRadius: 8, fontSize: 12 }} formatter={(v) => [`${v}%`, 'Progress']} />
+            <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b6659' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: '#6b6659' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+            <ReTooltip contentStyle={{ background: '#ffffff', border: '1px solid #e3ded2', borderRadius: 6, fontSize: 12 }} formatter={(v) => [`${v}%`, 'Progress']} />
             <Bar dataKey="progress" radius={[4, 4, 0, 0]} maxBarSize={32}>
               {data.map((entry, i) => (
                 <Cell key={i} fill={entry.status === 'failed' ? COLORS.danger : entry.status === 'building' ? COLORS.warning : COLORS.success} />
@@ -173,10 +173,10 @@ function CodeActivityChart({ data, loading }) {
         </div>
         <ResponsiveContainer width="100%" height={100}>
           <AreaChart data={chartData}>
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#5a6278' }} axisLine={false} tickLine={false} />
-            <ReTooltip contentStyle={{ background: '#181b28', border: '1px solid #1e2235', borderRadius: 8, fontSize: 12 }} />
-            <Area type="monotone" dataKey="commits" stroke={COLORS.primary} fill="rgba(99,102,241,0.15)" strokeWidth={2} />
-            <Area type="monotone" dataKey="pull_requests" stroke={COLORS.success} fill="rgba(34,197,94,0.1)" strokeWidth={2} />
+            <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#6b6659' }} axisLine={false} tickLine={false} />
+            <ReTooltip contentStyle={{ background: '#ffffff', border: '1px solid #e3ded2', borderRadius: 6, fontSize: 12 }} />
+            <Area type="monotone" dataKey="commits" stroke={COLORS.primary} fill="rgba(163,76,38,0.12)" strokeWidth={2} />
+            <Area type="monotone" dataKey="pull_requests" stroke={COLORS.success} fill="rgba(55,112,79,0.1)" strokeWidth={2} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -387,6 +387,7 @@ function TeamActivityFeed({ activities, loading }) {
   if (!activities.length) return <ReadyEmpty icon={Users} message="No team activity yet" />;
 
   const timeAgo = (date) => {
+    // eslint-disable-next-line react-hooks/purity
     const diff = Date.now() - new Date(date).getTime();
     const mins = Math.floor(diff / 60000);
     if (mins < 1) return 'just now';

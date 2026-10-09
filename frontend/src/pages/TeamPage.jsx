@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Shield, Plus, UserPlus } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import { Shield, UserPlus } from 'lucide-react';
 import api from '../api';
 
 export default function TeamPage() {
-  const { user } = useApp();
-  const [members, setMembers] = useState([]);
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
@@ -34,7 +31,7 @@ export default function TeamPage() {
         <div className="page-section">
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
             <h3 className="page-section-title" style={{ margin: 0 }}>Members</h3>
-            <button className="btn btn-sm btn-secondary"><UserPlus size={14} /> Invite</button>
+            <button className="btn btn-sm btn-secondary" aria-label="Invite team member"><UserPlus size={14} /> Invite</button>
           </div>
           <div className="page-list">
             {teamMembers.map((m, i) => (

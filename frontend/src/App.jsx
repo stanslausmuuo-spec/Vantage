@@ -1,7 +1,7 @@
-import { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect, useState, lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { CommandIcon, Search, Sun, Moon, LogOut, BarChart3 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
 import { AppProvider, useApp } from './context/AppContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Sidebar from './components/Sidebar';
@@ -9,11 +9,13 @@ import GlobalSearch from './components/GlobalSearch';
 import CommandPalette from './components/CommandPalette';
 import MorningBrief from './components/MorningBrief';
 import NewProjectModal from './components/NewProjectModal';
+import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 import { ToastProvider } from './components/Toast';
 import './index.css';
 import './App.css';
 
 const Auth = lazy(() => import('./components/Auth'));
+const Landing = lazy(() => import('./components/Landing'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const ProjectDetail = lazy(() => import('./components/ProjectDetail'));
 const AppVibeStudio = lazy(() => import('./components/AppVibeStudio'));
@@ -35,10 +37,16 @@ function PageLoader() {
 }
 
 function AppContent() {
-  const { user, logout, deepWork, setDeepWork, setCommandOpen, setSearchOpen, setBriefOpen } = useApp();
+  const { user, logout, deepWork, setDeepWork, setCommandOpen, setSearchOpen, setBriefOpen, setShowNewProjectModal } = useApp();
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    let gPressed = false;
     const handler = (e) => {
+      // Don't trigger shortcuts if user is typing in input or textarea
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setCommandOpen(true);
@@ -47,17 +55,39 @@ function AppContent() {
         e.preventDefault();
         setSearchOpen(true);
       }
+      if (e.key === '?') {
+        e.preventDefault();
+        setShortcutsOpen((prev) => !prev);
+      }
+      if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        setShowNewProjectModal(true);
+      }
+      if (e.key === 'g' || e.key === 'G') {
+        gPressed = true;
+        setTimeout(() => { gPressed = false; }, 1500);
+        return;
+      }
+      if (gPressed) {
+        if (e.key === 'd' || e.key === 'D') navigate('/');
+        if (e.key === 't' || e.key === 'T') navigate('/tasks');
+        if (e.key === 'c' || e.key === 'C') navigate('/calendar');
+        if (e.key === 's' || e.key === 'S') navigate('/studio');
+        gPressed = false;
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [setCommandOpen, setSearchOpen]);
+  }, [setCommandOpen, setSearchOpen, setShowNewProjectModal, navigate]);
 
   if (!user) {
     return (
       <ErrorBoundary>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="*" element={<Auth />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Suspense>
         <CommandPalette />
@@ -75,6 +105,7 @@ function AppContent() {
             whileTap={{ scale: 0.95 }}
             onClick={() => setCommandOpen(true)}
             title="Command Palette (Cmd+K)"
+            aria-label="Open command palette"
           >
             <CommandIcon size={18} />
           </motion.button>
@@ -85,6 +116,7 @@ function AppContent() {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
           onClick={() => setSearchOpen(true)}
+          aria-label="Open global search"
         >
           <Search size={15} />
           <span>Search projects, tasks, people...</span>
@@ -92,7 +124,7 @@ function AppContent() {
         </motion.button>
 
         <div className="app-header-right">
-          <button className="btn-icon" onClick={() => setBriefOpen(true)} title="Morning Brief">
+          <button className="btn-icon" onClick={() => setBriefOpen(true)} title="Morning Brief" aria-label="Open morning brief">
             <BarChart3 size={16} />
           </button>
           <motion.button
@@ -101,6 +133,8 @@ function AppContent() {
             whileTap={{ scale: 0.95 }}
             onClick={() => setDeepWork(!deepWork)}
             title={deepWork ? 'Exit Deep Work' : 'Deep Work Mode'}
+            aria-label={deepWork ? 'Exit deep work mode' : 'Enter deep work mode'}
+            aria-pressed={deepWork}
           >
             {deepWork ? <Sun size={16} /> : <Moon size={16} />}
           </motion.button>
@@ -118,6 +152,7 @@ function AppContent() {
               whileTap={{ scale: 0.95 }}
               onClick={logout}
               title="Logout"
+              aria-label="Log out"
             >
               <LogOut size={14} />
             </motion.button>
@@ -151,6 +186,7 @@ function AppContent() {
       <CommandPalette />
       <GlobalSearch />
       <MorningBrief />
+      <KeyboardShortcutsModal isOpen={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </div>
   );
 }
@@ -160,7 +196,9 @@ function App() {
     <BrowserRouter>
       <AppProvider>
         <ToastProvider>
-          <AppContent />
+          <MotionConfig reducedMotion="user">
+            <AppContent />
+          </MotionConfig>
         </ToastProvider>
       </AppProvider>
     </BrowserRouter>

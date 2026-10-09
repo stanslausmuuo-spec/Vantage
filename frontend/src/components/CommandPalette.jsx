@@ -113,6 +113,9 @@ const CommandPalette = () => {
         >
           <motion.div
             className="command-palette"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Command palette"
             initial={{ opacity: 0, y: -20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.97 }}
@@ -128,6 +131,7 @@ const CommandPalette = () => {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search or type a command..."
+                aria-label="Search or type a command"
               />
               <kbd>ESC</kbd>
             </div>
@@ -136,7 +140,7 @@ const CommandPalette = () => {
               <div className="command-hint">Suggestions</div>
             )}
 
-            <div className="command-results">
+            <div className="command-results" role="listbox" aria-label="Command results">
               {results.length === 0 && (
                 <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
                   No results found
@@ -145,6 +149,8 @@ const CommandPalette = () => {
               {results.map((item, i) => (
                 <div
                   key={item.id}
+                  role="option"
+                  aria-selected={i === selectedIndex}
                   className={`command-item ${i === selectedIndex ? 'selected' : ''}`}
                   onClick={() => execute(item)}
                   onMouseEnter={() => setSelectedIndex(i)}

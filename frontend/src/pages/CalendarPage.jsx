@@ -61,13 +61,13 @@ export default function CalendarPage() {
           <h1>Calendar</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button className="btn-icon" onClick={() => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); }}>
+          <button className="btn-icon" aria-label="Previous month" onClick={() => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); }}>
             <ChevronLeft size={16} />
           </button>
           <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-h)', minWidth: 160, textAlign: 'center' }}>
             {MONTHS[month]} {year}
           </span>
-          <button className="btn-icon" onClick={() => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); }}>
+          <button className="btn-icon" aria-label="Next month" onClick={() => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); }}>
             <ChevronRight size={16} />
           </button>
         </div>
@@ -77,11 +77,11 @@ export default function CalendarPage() {
         <div className="skeleton" style={{ height: 400, borderRadius: 12 }} />
       ) : noProjects ? (
         <div className="page-empty" style={{ marginTop: 40 }}>
-          <Calendar size={40} className="page-empty-icon" />
+          <Calendar size={40} className="page-empty-icon" aria-hidden="true" />
           <h3>No projects yet</h3>
           <p>Create a project and set due dates on tasks — they'll appear on the calendar.</p>
           <button className="btn btn-primary" onClick={() => setShowNewProjectModal(true)}>
-            <Plus size={16} /> Create Project
+            <Plus size={16} /> Create project
           </button>
         </div>
       ) : (

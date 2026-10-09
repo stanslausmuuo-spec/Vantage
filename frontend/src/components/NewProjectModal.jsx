@@ -5,13 +5,13 @@ import api from '../api';
 import { useApp } from '../context/AppContext';
 import { toast } from './Toast';
 
-const COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4'];
+const COLORS = ['#a34c26', '#1a1814', '#37704f', '#8a6216', '#b23a2f', '#5b6b7a'];
 
 export default function NewProjectModal({ onCreated }) {
   const { showNewProjectModal, setShowNewProjectModal } = useApp();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [color, setColor] = useState('#6366f1');
+  const [color, setColor] = useState('#a34c26');
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function NewProjectModal({ onCreated }) {
       setShowNewProjectModal(false);
       setName('');
       setDescription('');
-      setColor('#6366f1');
+      setColor('#a34c26');
       if (onCreated) onCreated(res.data);
       toast(`Project "${name}" created`);
       navigate(`/project/${res.data.id}`);
@@ -47,17 +47,21 @@ export default function NewProjectModal({ onCreated }) {
         >
           <motion.div
             className="modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="new-project-title"
             initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3>New Project</h3>
+            <h3 id="new-project-title">New Project</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Name</label>
+                <label htmlFor="new-project-name">Name</label>
                 <input
+                  id="new-project-name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -67,15 +71,16 @@ export default function NewProjectModal({ onCreated }) {
                 />
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label htmlFor="new-project-desc">Description</label>
                 <textarea
+                  id="new-project-desc"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Short description of the project"
                 />
               </div>
               <div className="form-group">
-                <label>Color</label>
+                <span className="form-group-label">Color</span>
                 <div className="color-picker">
                   {COLORS.map((c) => (
                     <button
@@ -84,6 +89,8 @@ export default function NewProjectModal({ onCreated }) {
                       className={`color-dot ${color === c ? 'color-dot-active' : ''}`}
                       style={{ background: c }}
                       onClick={() => setColor(c)}
+                      aria-label={`Select color ${c}`}
+                      aria-pressed={color === c}
                     />
                   ))}
                 </div>

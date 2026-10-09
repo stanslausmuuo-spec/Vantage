@@ -11,9 +11,9 @@ import SmartInput from './SmartInput';
 import { KanbanSkeleton } from './SkeletonLoader';
 
 const COLUMNS = [
-  { key: 'To Do', label: 'To Do', color: '#64748b' },
-  { key: 'In Progress', label: 'In Progress', color: '#f59e0b' },
-  { key: 'Done', label: 'Done', color: '#22c55e' },
+  { key: 'To Do', label: 'To Do', color: '#6b6659' },
+  { key: 'In Progress', label: 'In Progress', color: '#8a6216' },
+  { key: 'Done', label: 'Done', color: '#37704f' },
 ];
 
 const ProjectDetail = () => {
@@ -108,7 +108,7 @@ const ProjectDetail = () => {
     return (
       <div className="project-detail">
         <div className="detail-header">
-          <button className="btn-icon" onClick={() => navigate('/')}>
+          <button className="btn-icon" onClick={() => navigate('/')} aria-label="Back to dashboard">
             <ArrowLeft size={20} />
           </button>
           <div className="skeleton" style={{ height: 24, width: 200 }} />
@@ -123,7 +123,7 @@ const ProjectDetail = () => {
   return (
     <div className="project-detail">
       <div className="detail-header">
-        <button className="btn-icon" onClick={() => navigate('/')}>
+        <button className="btn-icon" onClick={() => navigate('/')} aria-label="Back to dashboard">
           <ArrowLeft size={20} />
         </button>
         <div className="detail-title-area">
@@ -141,7 +141,7 @@ const ProjectDetail = () => {
           <button className="btn btn-secondary btn-sm" onClick={() => setBriefOpen(true)}>
             <Plus size={14} /> Brief
           </button>
-          <button className="btn-icon" onClick={() => setShowMenu(!showMenu)}>
+          <button className="btn-icon" onClick={() => setShowMenu(!showMenu)} aria-label="Project options" aria-expanded={showMenu}>
             <MoreHorizontal size={18} />
           </button>
         </div>

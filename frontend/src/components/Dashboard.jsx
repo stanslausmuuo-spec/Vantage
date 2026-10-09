@@ -86,10 +86,11 @@ const Dashboard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              <Folder size={48} className="empty-state-icon" />
-              <p>No projects yet — create your first one to get started.</p>
+              <Folder size={40} className="empty-state-icon" aria-hidden="true" />
+              <h3>Start with one project</h3>
+              <p>Group related work, assign owners, and watch it move from to-do to done.</p>
               <button className="btn btn-primary" onClick={() => setShowNewProjectModal(true)}>
-                <Plus size={16} /> Create Project
+                <Plus size={16} /> Create project
               </button>
             </motion.div>
           ) : view === 'gantt' && isManager ? (
@@ -112,7 +113,7 @@ const Dashboard = () => {
                 >
                   <div className="project-card-top">
                     <h3>{project.name}</h3>
-                    <button className="btn-icon btn-sm" onClick={(e) => handleDeleteProject(project.id, e)}>
+                    <button className="btn-icon btn-sm" onClick={(e) => handleDeleteProject(project.id, e)} aria-label={`Delete project ${project.name}`}>
                       <Trash2 size={14} />
                     </button>
                   </div>

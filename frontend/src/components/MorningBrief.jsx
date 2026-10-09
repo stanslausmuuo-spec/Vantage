@@ -25,6 +25,8 @@ const MorningBrief = () => {
       {briefOpen && (
         <motion.div
           className="brief-panel"
+          role="complementary"
+          aria-label="Morning brief"
           initial={{ x: 380 }}
           animate={{ x: 0 }}
           exit={{ x: 380 }}
@@ -37,7 +39,7 @@ const MorningBrief = () => {
                 {brief?.date ? new Date(brief.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : ''}
               </span>
             </div>
-            <button className="btn-icon" onClick={() => setBriefOpen(false)}>
+            <button className="btn-icon" onClick={() => setBriefOpen(false)} aria-label="Close morning brief">
               <X size={18} />
             </button>
           </div>

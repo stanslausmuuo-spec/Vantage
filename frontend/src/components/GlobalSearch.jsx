@@ -71,6 +71,9 @@ const GlobalSearch = () => {
         >
           <motion.div
             className="command-palette"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Global search"
             initial={{ opacity: 0, y: -20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.97 }}
@@ -86,6 +89,7 @@ const GlobalSearch = () => {
                 onChange={e => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search projects, tasks, people..."
+                aria-label="Search projects, tasks, people"
               />
               <kbd>ESC</kbd>
             </div>
@@ -98,7 +102,7 @@ const GlobalSearch = () => {
               </div>
             )}
 
-            <div className="command-results">
+            <div className="command-results" role="listbox" aria-label="Search results">
               {flatItems.length === 0 && query.length >= 2 && (
                 <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
                   No results for "{query}"
@@ -107,6 +111,8 @@ const GlobalSearch = () => {
               {flatItems.map((item, i) => (
                 <div
                   key={`${item.type}-${item.id}`}
+                  role="option"
+                  aria-selected={i === selectedIndex}
                   className={`command-item ${i === selectedIndex ? 'selected' : ''}`}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(i)}

@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CreditCard, DollarSign, Plus } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import { CreditCard, DollarSign } from 'lucide-react';
 import api from '../api';
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState([]);
-  const { setShowNewProjectModal } = useApp();
 
   useEffect(() => {
     api.get('/studio/payments').then(r => setPayments(r.data)).catch(() => {});
@@ -28,9 +26,9 @@ export default function PaymentsPage() {
 
       {payments.length === 0 ? (
         <div className="page-empty" style={{ marginTop: 20 }}>
-          <DollarSign size={40} className="page-empty-icon" />
+          <DollarSign size={40} className="page-empty-icon" aria-hidden="true" />
           <h3>No transactions yet</h3>
-          <p>Payment transactions appear here once you process payments via Stripe, Apple Pay, or credit card.</p>
+          <p>Process a payment via Stripe, Apple Pay, or credit card and it will show up here with full gateway status.</p>
           <div className="page-gateways" style={{ maxWidth: 400, marginTop: 8 }}>
             {['Stripe', 'Apple Pay', 'Credit Card'].map(g => (
               <div key={g} className="page-gateway-card">

@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Cloud, Globe, ArrowUpRight, Plus } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import { Cloud, Globe, ArrowUpRight } from 'lucide-react';
 import api from '../api';
 
 export default function DeploymentsPage() {
   const [deployments, setDeployments] = useState([]);
-  const { setShowNewProjectModal } = useApp();
 
   useEffect(() => {
     api.get('/studio/deployments').then(r => setDeployments(r.data)).catch(() => {});
@@ -23,7 +21,7 @@ export default function DeploymentsPage() {
 
       {deployments.length === 0 ? (
         <div className="page-empty" style={{ marginTop: 20 }}>
-          <Cloud size={40} className="page-empty-icon" />
+          <Cloud size={40} className="page-empty-icon" aria-hidden="true" />
           <h3>No deployments yet</h3>
           <p>Deployments appear here once you push code. The pipeline shows your path from commit to production.</p>
           <div className="studio-pipeline-steps" style={{ maxWidth: 400, marginTop: 12 }}>
@@ -67,7 +65,7 @@ export default function DeploymentsPage() {
                     <span className="page-list-meta">{d.environment} · {d.provider || 'Vercel'}</span>
                   </div>
                   {d.url && (
-                    <a href={d.url} target="_blank" rel="noopener noreferrer" className="btn-icon" style={{ marginRight: 8 }}>
+                    <a href={d.url} target="_blank" rel="noopener noreferrer" className="btn-icon" style={{ marginRight: 8 }} aria-label={`Open ${d.name} deployment`}>
                       <ArrowUpRight size={14} />
                     </a>
                   )}
