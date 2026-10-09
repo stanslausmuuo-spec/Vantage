@@ -23,7 +23,7 @@ api.interceptors.response.use(
       localStorage.removeItem('userId');
       localStorage.removeItem('username');
       localStorage.removeItem('role');
-      window.location.hash = '#/auth';
+      window.dispatchEvent(new Event('vantage:auth-expired'));
     }
     return Promise.reject(err);
   }

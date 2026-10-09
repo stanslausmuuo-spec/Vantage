@@ -20,6 +20,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const isDev = process.env.NODE_ENV !== 'production';
 
+if (!isDev && !process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET must be set when NODE_ENV=production.');
+  process.exit(1);
+}
+
 // Security
 app.use(helmet({
   contentSecurityPolicy: isDev ? false : undefined,

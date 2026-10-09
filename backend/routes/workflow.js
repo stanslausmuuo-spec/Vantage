@@ -4,7 +4,7 @@ const auth = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.get('/rules', auth, (req, res) => {
-  db.all(`SELECT * FROM workflow_rules`, [], (err, rows) => {
+  db.all(`SELECT * FROM workflow_rules WHERE user_id = ?`, [req.user.user_id], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     rows.forEach(r => { try { r.action_config = JSON.parse(r.action_config); } catch { r.action_config = {}; } });
     res.json(rows);
@@ -16,9 +16,9 @@ router.post('/rules', auth, (req, res) => {
   if (!name || !action_type) return res.status(400).json({ error: 'name and action_type required' });
   const config = JSON.stringify(action_config || {});
   db.run(
-    `INSERT INTO workflow_rules (name, trigger_project, trigger_status, action_type, action_config, source_team, target_team)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [name, trigger_project || null, trigger_status || null, action_type, config, source_team || null, target_team || null],
+    `INSERT INTO workflow_rules (name, trigger_project, trigger_status, action_type, action_config, source_team, target_team, user_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [name, trigger_project || null, trigger_status || null, action_type, config, source_team || null, target_team || null, req.user.user_id],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
       res.status(201).json({ id: this.lastID, name, trigger_project, trigger_status, action_type, action_config, source_team, target_team });
@@ -27,8 +27,9 @@ router.post('/rules', auth, (req, res) => {
 });
 
 router.delete('/rules/:id', auth, (req, res) => {
-  db.run(`DELETE FROM workflow_rules WHERE id = ?`, [req.params.id], function (err) {
+  db.run(`DELETE FROM workflow_rules WHERE id = ? AND user_id = ?`, [req.params.id, req.user.user_id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
+    if (this.changes === 0) return res.status(404).json({ error: 'Rule not found' });
     res.json({ message: 'Rule deleted' });
   });
 });

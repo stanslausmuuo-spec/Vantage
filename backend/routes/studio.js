@@ -79,10 +79,10 @@ router.get('/payments', auth, (req, res) => {
 // API Endpoints
 router.get('/endpoints', auth, (req, res) => {
   const projectId = req.query.project_id;
-  let query = `SELECT e.*, p.name as project_name FROM api_endpoints e LEFT JOIN projects p ON e.project_id = p.id`;
-  const params = [];
+  let query = `SELECT e.*, p.name as project_name FROM api_endpoints e LEFT JOIN projects p ON e.project_id = p.id WHERE e.user_id = ?`;
+  const params = [req.user.user_id];
   if (projectId) {
-    query += ` WHERE e.project_id = ?`;
+    query += ` AND e.project_id = ?`;
     params.push(projectId);
   }
   query += ` ORDER BY e.path ASC`;
@@ -95,14 +95,27 @@ router.get('/endpoints', auth, (req, res) => {
 router.post('/endpoints', auth, (req, res) => {
   const { method, path, description, logic_layer, database_table, project_id } = req.body;
   if (!path) return res.status(400).json({ error: 'path required' });
-  db.run(
-    `INSERT INTO api_endpoints (method, path, description, logic_layer, database_table, project_id) VALUES (?, ?, ?, ?, ?, ?)`,
-    [method || 'GET', path, description || '', logic_layer || 'controllers', database_table || '', project_id || null],
-    function (err) {
+
+  const insert = () => {
+    db.run(
+      `INSERT INTO api_endpoints (method, path, description, logic_layer, database_table, project_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [method || 'GET', path, description || '', logic_layer || 'controllers', database_table || '', project_id || null, req.user.user_id],
+      function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ id: this.lastID, method, path });
+      }
+    );
+  };
+
+  if (project_id) {
+    db.get(`SELECT id FROM projects WHERE id = ? AND user_id = ?`, [project_id, req.user.user_id], (err, row) => {
       if (err) return res.status(500).json({ error: err.message });
-      res.status(201).json({ id: this.lastID, method, path });
-    }
-  );
+      if (!row) return res.status(403).json({ error: 'Not authorized for this project' });
+      insert();
+    });
+  } else {
+    insert();
+  }
 });
 
 // Schema / ERD

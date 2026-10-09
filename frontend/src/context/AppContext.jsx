@@ -34,6 +34,12 @@ export function AppProvider({ children }) {
     setUser(null);
   }, []);
 
+  useEffect(() => {
+    const onAuthExpired = () => logout();
+    window.addEventListener('vantage:auth-expired', onAuthExpired);
+    return () => window.removeEventListener('vantage:auth-expired', onAuthExpired);
+  }, [logout]);
+
   const fetchBottlenecks = useCallback(async () => {
     try {
       const res = await api.get('/insights/bottlenecks');

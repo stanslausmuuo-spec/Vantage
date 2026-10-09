@@ -89,7 +89,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
           source_team TEXT,
           target_team TEXT,
           enabled INTEGER DEFAULT 1,
-          created_at TEXT DEFAULT (datetime('now'))
+          user_id INTEGER,
+          created_at TEXT DEFAULT (datetime('now')),
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         )
       `);
 
@@ -154,7 +156,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
           logic_layer TEXT DEFAULT 'controllers',
           database_table TEXT,
           project_id INTEGER,
-          FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE
+          user_id INTEGER,
+          FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         )
       `);
 
@@ -169,6 +173,17 @@ const db = new sqlite3.Database(dbPath, (err) => {
           FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         )
       `);
+
+      // Migration: add user scoping to tables created before it existed.
+      const addColumnIfMissing = (table, column, definition) => {
+        db.all(`PRAGMA table_info(${table})`, [], (err, cols) => {
+          if (!err && cols && !cols.some((c) => c.name === column)) {
+            db.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+          }
+        });
+      };
+      addColumnIfMissing('workflow_rules', 'user_id', 'INTEGER');
+      addColumnIfMissing('api_endpoints', 'user_id', 'INTEGER');
     });
   }
 });

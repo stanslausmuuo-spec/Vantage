@@ -146,8 +146,8 @@ async function seed() {
                 ['POST', '/api/auth/signup', 'User signup', 'Auth', 'users'],
               ];
               endpoints.forEach(([method, path, desc, logic, table]) => {
-                db.run(`INSERT INTO api_endpoints (method, path, description, logic_layer, database_table) VALUES (?, ?, ?, ?, ?)`,
-                  [method, path, desc, logic, table]);
+                db.run(`INSERT INTO api_endpoints (method, path, description, logic_layer, database_table, user_id) VALUES (?, ?, ?, ?, ?, ?)`,
+                  [method, path, desc, logic, table, uid]);
               });
 
               // Team Activity
@@ -165,7 +165,7 @@ async function seed() {
 
               console.log('Database seeded successfully!');
               console.log('  Demo login: demo / password123');
-              console.log(`  ${tasks.length} tasks, ${builds.length} builds, ${deployments.length} deployments`);
+              console.log(`  ${tasks.length} tasks, ${buildNames.length} builds, ${deployments.length} deployments`);
               console.log(`  ${payments.length} payments, ${endpoints.length} endpoints`);
             });
           }, 100);

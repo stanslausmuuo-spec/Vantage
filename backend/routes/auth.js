@@ -5,6 +5,10 @@ const db = require('../db');
 
 const router = express.Router();
 
+// Roles a user may self-select at signup. Elevated roles (executive) are
+// assigned by an administrator, never requested by the client.
+const ALLOWED_SIGNUP_ROLES = ['engineer', 'manager'];
+
 // Register a new user
 router.post('/signup', async (req, res) => {
   try {
@@ -16,7 +20,7 @@ router.post('/signup', async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
-    const userRole = role || 'engineer';
+    const userRole = ALLOWED_SIGNUP_ROLES.includes(role) ? role : 'engineer';
 
     db.run(
       `INSERT INTO users (username, password, role) VALUES (?, ?, ?)`,

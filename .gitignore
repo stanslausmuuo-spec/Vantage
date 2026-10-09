@@ -7,3 +7,13 @@ dist/
 build/
 .DS_Store
 *.log
+
+# Environment files — never commit secrets
+.env
+.env.local
+backend/.env
+
+# Local SQLite database (WAL sidecar files included)
+backend/database.sqlite
+backend/database.sqlite-shm
+backend/database.sqlite-wal
